@@ -12,13 +12,14 @@ import { textMessageMock } from '../src/message/mocks/text-message.mock';
 describe('MessageController (e2e)', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
+    jest.useFakeTimers();
   });
 
   describe('/messages/incoming-messages (POST)', () => {
@@ -93,5 +94,9 @@ describe('MessageController (e2e)', () => {
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(templateMessageMock);
     });
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });
