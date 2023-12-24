@@ -23,6 +23,8 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+Go to `http://localhost:3000/api` to check the endpoints.
+
 ## Test
 
 ```bash

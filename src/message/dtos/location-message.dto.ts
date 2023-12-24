@@ -1,11 +1,25 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { MessageTypeEnum } from '../enums/message-type.enum';
 import { BaseMessageDto } from './base-message.dto';
 
+export class GeoDto {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  lat: number;
+
+  @ApiProperty()
+  long: number;
+}
+
 export class LocationMessageDto extends BaseMessageDto {
+  @ApiProperty({
+    type: MessageTypeEnum.text,
+    default: MessageTypeEnum.location,
+  })
   type: MessageTypeEnum.location;
-  geo: {
-    name: string;
-    lat: number;
-    long: number;
-  };
+
+  @ApiProperty({ type: GeoDto })
+  geo: GeoDto;
 }
