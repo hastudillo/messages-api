@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 
 import { MessageTypeEnum } from '../enums/message-type.enum';
 import { BaseMessageDto } from './base-message.dto';
+import { ReturnedIdDto } from './returned-id.dto';
 
 export class TemplateMessageDto extends BaseMessageDto {
   @ApiProperty({
@@ -16,3 +17,8 @@ export class TemplateMessageDto extends BaseMessageDto {
   @ApiProperty()
   variables: Record<string, string>;
 }
+
+export class ReturnedTemplateMessageDto extends IntersectionType(
+  ReturnedIdDto,
+  TemplateMessageDto,
+) {}

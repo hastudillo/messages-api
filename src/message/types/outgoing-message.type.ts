@@ -1,7 +1,19 @@
-import { AttachmentMessageDto } from '../dtos/attachment-message.dto';
-import { LocationMessageDto } from '../dtos/location-message.dto';
-import { TemplateMessageDto } from '../dtos/template-message.dto';
-import { TextMessageDto } from '../dtos/text-message.dto';
+import {
+  AttachmentMessageDto,
+  ReturnedAttachmentMessageDto,
+} from '../dtos/attachment-message.dto';
+import {
+  LocationMessageDto,
+  ReturnedLocationMessageDto,
+} from '../dtos/location-message.dto';
+import {
+  ReturnedTemplateMessageDto,
+  TemplateMessageDto,
+} from '../dtos/template-message.dto';
+import {
+  ReturnedTextMessageDto,
+  TextMessageDto,
+} from '../dtos/text-message.dto';
 
 export type OutgoingMessage =
   | TemplateMessageDto
@@ -9,4 +21,8 @@ export type OutgoingMessage =
   | LocationMessageDto
   | TextMessageDto;
 
-export type ReturnedOutgoingMessage = { id: string } & OutgoingMessage;
+export type ReturnedOutgoingMessage =
+  | ReturnedTemplateMessageDto
+  | ReturnedAttachmentMessageDto
+  | ReturnedLocationMessageDto
+  | ReturnedTextMessageDto;

@@ -1,6 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+
 import { MessageTypeEnum } from '../enums/message-type.enum';
 import { BaseMessageDto } from './base-message.dto';
+import { ReturnedIdDto } from './returned-id.dto';
 
 export class GeoDto {
   @ApiProperty()
@@ -23,3 +25,8 @@ export class LocationMessageDto extends BaseMessageDto {
   @ApiProperty({ type: GeoDto })
   geo: GeoDto;
 }
+
+export class ReturnedLocationMessageDto extends IntersectionType(
+  ReturnedIdDto,
+  LocationMessageDto,
+) {}

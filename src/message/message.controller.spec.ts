@@ -23,22 +23,24 @@ describe('MessageController', () => {
   });
 
   describe('receivingNewMessage', () => {
-    it('should receive an incoming attachment message and return it', () => {
-      const result = controller.receivingNewMessage(attachmentMessageMock);
+    it('should receive an incoming attachment message and return it', async () => {
+      const result = await controller.receivingNewMessage(
+        attachmentMessageMock,
+      );
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(attachmentMessageMock);
     });
 
-    it('should receive an incoming location message and return it', () => {
-      const result = controller.receivingNewMessage(locationMessageMock);
+    it('should receive an incoming location message and return it', async () => {
+      const result = await controller.receivingNewMessage(locationMessageMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(locationMessageMock);
     });
 
-    it('should receive an incoming text message and return it', () => {
-      const result = controller.receivingNewMessage(textMessageMock);
+    it('should receive an incoming text message and return it', async () => {
+      const result = await controller.receivingNewMessage(textMessageMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(textMessageMock);
@@ -46,29 +48,29 @@ describe('MessageController', () => {
   });
 
   describe('sendingNewMessage', () => {
-    it('should receive an outgoing attachment message and return it', () => {
-      const result = controller.sendingNewMessage(attachmentMessageMock);
+    it('should receive an outgoing attachment message and return it', async () => {
+      const result = await controller.sendingNewMessage(attachmentMessageMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(attachmentMessageMock);
     });
 
-    it('should receive an outgoing location message and return it', () => {
-      const result = controller.sendingNewMessage(locationMessageMock);
+    it('should receive an outgoing location message and return it', async () => {
+      const result = await controller.sendingNewMessage(locationMessageMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(locationMessageMock);
     });
 
-    it('should receive an outgoing text message and return it', () => {
-      const result = controller.sendingNewMessage(textMessageMock);
+    it('should receive an outgoing text message and return it', async () => {
+      const result = await controller.sendingNewMessage(textMessageMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(textMessageMock);
     });
 
-    it('should receive an outgoing template message and return it', () => {
-      const result = controller.sendingNewMessage(templateMessageMock);
+    it('should receive an outgoing template message and return it', async () => {
+      const result = await controller.sendingNewMessage(templateMessageMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(templateMessageMock);

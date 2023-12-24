@@ -8,10 +8,22 @@ import {
 } from '@nestjs/swagger';
 import { v1 as uuidv1 } from 'uuid';
 
-import { AttachmentMessageDto } from './dtos/attachment-message.dto';
-import { LocationMessageDto } from './dtos/location-message.dto';
-import { TemplateMessageDto } from './dtos/template-message.dto';
-import { TextMessageDto } from './dtos/text-message.dto';
+import {
+  AttachmentMessageDto,
+  ReturnedAttachmentMessageDto,
+} from './dtos/attachment-message.dto';
+import {
+  LocationMessageDto,
+  ReturnedLocationMessageDto,
+} from './dtos/location-message.dto';
+import {
+  ReturnedTemplateMessageDto,
+  TemplateMessageDto,
+} from './dtos/template-message.dto';
+import {
+  ReturnedTextMessageDto,
+  TextMessageDto,
+} from './dtos/text-message.dto';
 import {
   IncomingMessage,
   ReturnedIncomingMessage,
@@ -27,6 +39,10 @@ import {
   AttachmentMessageDto,
   LocationMessageDto,
   TextMessageDto,
+  ReturnedTemplateMessageDto,
+  ReturnedAttachmentMessageDto,
+  ReturnedLocationMessageDto,
+  ReturnedTextMessageDto,
 )
 @Controller('messages')
 export class MessageController {
@@ -48,11 +64,24 @@ export class MessageController {
   @ApiResponse({
     status: 201,
     description: 'The incoming message has been successfully created.',
+    schema: {
+      oneOf: [
+        {
+          $ref: getSchemaPath(ReturnedAttachmentMessageDto),
+        },
+        {
+          $ref: getSchemaPath(ReturnedLocationMessageDto),
+        },
+        {
+          $ref: getSchemaPath(ReturnedTextMessageDto),
+        },
+      ],
+    },
   })
   @Post('incoming-messages')
-  receivingNewMessage(
+  async receivingNewMessage(
     @Body() incomingMessage: IncomingMessage,
-  ): ReturnedIncomingMessage {
+  ): Promise<ReturnedIncomingMessage> {
     return { id: uuidv1(), ...incomingMessage };
   }
 
@@ -77,11 +106,27 @@ export class MessageController {
   @ApiResponse({
     status: 201,
     description: 'The outgoing message has been successfully created.',
+    schema: {
+      oneOf: [
+        {
+          $ref: getSchemaPath(ReturnedTemplateMessageDto),
+        },
+        {
+          $ref: getSchemaPath(ReturnedAttachmentMessageDto),
+        },
+        {
+          $ref: getSchemaPath(ReturnedLocationMessageDto),
+        },
+        {
+          $ref: getSchemaPath(ReturnedTextMessageDto),
+        },
+      ],
+    },
   })
   @Post('outgoing-messages')
-  sendingNewMessage(
+  async sendingNewMessage(
     @Body() outgoingMessage: OutgoingMessage,
-  ): ReturnedOutgoingMessage {
+  ): Promise<ReturnedOutgoingMessage> {
     return { id: uuidv1(), ...outgoingMessage };
   }
 }
