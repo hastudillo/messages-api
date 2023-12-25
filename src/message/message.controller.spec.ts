@@ -1,79 +1,157 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { validate as isValidUUID } from 'uuid';
+import { NIL as UUID_NIL, validate as isValidUUID } from 'uuid';
 
+import { MessageTypeEnum } from './enums/message-type.enum';
 import { MessageController } from './message.controller';
-import { attachmentMessageMock } from './mocks/attachment-message.mock';
-import { locationMessageMock } from './mocks/location-message.mock';
-import { templateMessageMock } from './mocks/template-message.mock';
-import { textMessageMock } from './mocks/text-message.mock';
+import { attachmentMessageDtoMock } from './mocks/attachment-message.dto.mock';
+import { locationMessageDtoMock } from './mocks/location-message.dto.mock';
+import { templateMessageDtoMock } from './mocks/template-message.dto.mock';
+import { textMessageDtoMock } from './mocks/text-message.dto.mock';
+import { StrategyService } from './services/strategy.service';
+import { MessageService } from './types/message-service.type';
+
+const messageServiceMock = {
+  save: jest.fn(),
+};
 
 describe('MessageController', () => {
   let controller: MessageController;
+  let strategyService: StrategyService;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [MessageController],
+      providers: [
+        {
+          provide: StrategyService,
+          useValue: {
+            getStrategy: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     controller = app.get<MessageController>(MessageController);
+    strategyService = app.get<StrategyService>(StrategyService);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(strategyService).toBeDefined();
   });
 
   describe('receivingNewMessage', () => {
     it('should receive an incoming attachment message and return it', async () => {
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockReturnValue(messageServiceMock as unknown as MessageService);
+      const spyOnSave = jest
+        .spyOn(messageServiceMock, 'save')
+        .mockResolvedValue({ ...attachmentMessageDtoMock, id: UUID_NIL });
       const result = await controller.receivingNewMessage(
-        attachmentMessageMock,
+        attachmentMessageDtoMock,
       );
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(attachmentMessageMock);
+      expect(rest).toEqual(attachmentMessageDtoMock);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.attachment);
+      expect(spyOnSave).toHaveBeenCalledWith(attachmentMessageDtoMock);
     });
 
     it('should receive an incoming location message and return it', async () => {
-      const result = await controller.receivingNewMessage(locationMessageMock);
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockReturnValue(messageServiceMock as unknown as MessageService);
+      const spyOnSave = jest
+        .spyOn(messageServiceMock, 'save')
+        .mockResolvedValue({ ...locationMessageDtoMock, id: UUID_NIL });
+      const result = await controller.receivingNewMessage(
+        locationMessageDtoMock,
+      );
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(locationMessageMock);
+      expect(rest).toEqual(locationMessageDtoMock);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.location);
+      expect(spyOnSave).toHaveBeenCalledWith(locationMessageDtoMock);
     });
 
     it('should receive an incoming text message and return it', async () => {
-      const result = await controller.receivingNewMessage(textMessageMock);
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockReturnValue(messageServiceMock as unknown as MessageService);
+      const spyOnSave = jest
+        .spyOn(messageServiceMock, 'save')
+        .mockResolvedValue({ ...textMessageDtoMock, id: UUID_NIL });
+      const result = await controller.receivingNewMessage(textMessageDtoMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(textMessageMock);
+      expect(rest).toEqual(textMessageDtoMock);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
+      expect(spyOnSave).toHaveBeenCalledWith(textMessageDtoMock);
     });
   });
 
   describe('sendingNewMessage', () => {
     it('should receive an outgoing attachment message and return it', async () => {
-      const result = await controller.sendingNewMessage(attachmentMessageMock);
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockReturnValue(messageServiceMock as unknown as MessageService);
+      const spyOnSave = jest
+        .spyOn(messageServiceMock, 'save')
+        .mockResolvedValue({ ...attachmentMessageDtoMock, id: UUID_NIL });
+      const result = await controller.sendingNewMessage(
+        attachmentMessageDtoMock,
+      );
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(attachmentMessageMock);
+      expect(rest).toEqual(attachmentMessageDtoMock);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.attachment);
+      expect(spyOnSave).toHaveBeenCalledWith(attachmentMessageDtoMock);
     });
 
     it('should receive an outgoing location message and return it', async () => {
-      const result = await controller.sendingNewMessage(locationMessageMock);
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockReturnValue(messageServiceMock as unknown as MessageService);
+      const spyOnSave = jest
+        .spyOn(messageServiceMock, 'save')
+        .mockResolvedValue({ ...locationMessageDtoMock, id: UUID_NIL });
+      const result = await controller.sendingNewMessage(locationMessageDtoMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(locationMessageMock);
+      expect(rest).toEqual(locationMessageDtoMock);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.location);
+      expect(spyOnSave).toHaveBeenCalledWith(locationMessageDtoMock);
     });
 
     it('should receive an outgoing text message and return it', async () => {
-      const result = await controller.sendingNewMessage(textMessageMock);
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockReturnValue(messageServiceMock as unknown as MessageService);
+      const spyOnSave = jest
+        .spyOn(messageServiceMock, 'save')
+        .mockResolvedValue({ ...textMessageDtoMock, id: UUID_NIL });
+      const result = await controller.sendingNewMessage(textMessageDtoMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(textMessageMock);
+      expect(rest).toEqual(textMessageDtoMock);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
+      expect(spyOnSave).toHaveBeenCalledWith(textMessageDtoMock);
     });
 
     it('should receive an outgoing template message and return it', async () => {
-      const result = await controller.sendingNewMessage(templateMessageMock);
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockReturnValue(messageServiceMock as unknown as MessageService);
+      const spyOnSave = jest
+        .spyOn(messageServiceMock, 'save')
+        .mockResolvedValue({ ...templateMessageDtoMock, id: UUID_NIL });
+      const result = await controller.sendingNewMessage(templateMessageDtoMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(templateMessageMock);
+      expect(rest).toEqual(templateMessageDtoMock);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.template);
+      expect(spyOnSave).toHaveBeenCalledWith(templateMessageDtoMock);
     });
   });
 });

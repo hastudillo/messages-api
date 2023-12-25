@@ -4,3 +4,5 @@ export enum MessageTypeEnum {
   text = 'text',
   template = 'template',
 }
+
+export type MessageType = `${MessageTypeEnum}`;

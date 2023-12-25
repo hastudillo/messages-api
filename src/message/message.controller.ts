@@ -6,7 +6,6 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { v1 as uuidv1 } from 'uuid';
 
 import {
   AttachmentMessageDto,
@@ -24,10 +23,12 @@ import {
   ReturnedTextMessageDto,
   TextMessageDto,
 } from './dtos/text-message.dto';
+import { StrategyService } from './services/strategy.service';
 import {
   IncomingMessage,
   ReturnedIncomingMessage,
 } from './types/incoming-message.type';
+import { MessageService } from './types/message-service.type';
 import {
   OutgoingMessage,
   ReturnedOutgoingMessage,
@@ -46,6 +47,8 @@ import {
 )
 @Controller('messages')
 export class MessageController {
+  constructor(private readonly strategyService: StrategyService) {}
+
   @ApiBody({
     schema: {
       oneOf: [
@@ -82,7 +85,10 @@ export class MessageController {
   async receivingNewMessage(
     @Body() incomingMessage: IncomingMessage,
   ): Promise<ReturnedIncomingMessage> {
-    return { id: uuidv1(), ...incomingMessage };
+    const service: MessageService = this.strategyService.getStrategy(
+      incomingMessage.type,
+    );
+    return service.save(incomingMessage);
   }
 
   @ApiBody({
@@ -127,6 +133,9 @@ export class MessageController {
   async sendingNewMessage(
     @Body() outgoingMessage: OutgoingMessage,
   ): Promise<ReturnedOutgoingMessage> {
-    return { id: uuidv1(), ...outgoingMessage };
+    const service: MessageService = this.strategyService.getStrategy(
+      outgoingMessage.type,
+    );
+    return service.save(outgoingMessage);
   }
 }

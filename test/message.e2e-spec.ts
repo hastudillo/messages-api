@@ -4,10 +4,10 @@ import * as request from 'supertest';
 import { validate as isValidUUID } from 'uuid';
 
 import { AppModule } from '../src/app.module';
-import { attachmentMessageMock } from '../src/message/mocks/attachment-message.mock';
-import { locationMessageMock } from '../src/message/mocks/location-message.mock';
-import { templateMessageMock } from '../src/message/mocks/template-message.mock';
-import { textMessageMock } from '../src/message/mocks/text-message.mock';
+import { attachmentMessageDtoMock } from '../src/message/mocks/attachment-message.dto.mock';
+import { locationMessageDtoMock } from '../src/message/mocks/location-message.dto.mock';
+import { templateMessageDtoMock } from '../src/message/mocks/template-message.dto.mock';
+import { textMessageDtoMock } from '../src/message/mocks/text-message.dto.mock';
 
 describe('MessageController (e2e)', () => {
   let app: INestApplication;
@@ -26,31 +26,31 @@ describe('MessageController (e2e)', () => {
     it('/messages/incoming-messages (POST) attachment', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/incoming-messages')
-        .send(attachmentMessageMock)
+        .send(attachmentMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(attachmentMessageMock);
+      expect(rest).toEqual(attachmentMessageDtoMock);
     });
 
     it('/messages/incoming-messages (POST) location', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/incoming-messages')
-        .send(locationMessageMock)
+        .send(locationMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(locationMessageMock);
+      expect(rest).toEqual(locationMessageDtoMock);
     });
 
     it('/messages/incoming-messages (POST) text', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/incoming-messages')
-        .send(textMessageMock)
+        .send(textMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(textMessageMock);
+      expect(rest).toEqual(textMessageDtoMock);
     });
   });
 
@@ -58,41 +58,41 @@ describe('MessageController (e2e)', () => {
     it('/messages/outgoing-messages (POST) attachment', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/outgoing-messages')
-        .send(attachmentMessageMock)
+        .send(attachmentMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(attachmentMessageMock);
+      expect(rest).toEqual(attachmentMessageDtoMock);
     });
 
     it('/messages/outgoing-messages (POST) location', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/outgoing-messages')
-        .send(locationMessageMock)
+        .send(locationMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(locationMessageMock);
+      expect(rest).toEqual(locationMessageDtoMock);
     });
 
     it('/messages/outgoing-messages (POST) text', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/outgoing-messages')
-        .send(textMessageMock)
+        .send(textMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(textMessageMock);
+      expect(rest).toEqual(textMessageDtoMock);
     });
 
     it('/messages/outgoing-messages (POST) template', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/outgoing-messages')
-        .send(templateMessageMock)
+        .send(templateMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(templateMessageMock);
+      expect(rest).toEqual(templateMessageDtoMock);
     });
   });
 

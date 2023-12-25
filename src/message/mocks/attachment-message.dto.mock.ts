@@ -2,7 +2,7 @@ import { AttachmentMessageDto } from '../dtos/attachment-message.dto';
 import { MessageTypeEnum } from '../enums/message-type.enum';
 import { StatusEnum } from '../enums/status.enum';
 
-export const attachmentMessageMock: AttachmentMessageDto = {
+export const attachmentMessageDtoMock: AttachmentMessageDto = {
   type: MessageTypeEnum.attachment,
   status: StatusEnum.received,
   time: '1970-01-01T00:00:00.000Z',
