@@ -49,10 +49,10 @@ export class LocationMessageService
     baseMessage: Message,
   ): LocationMessage {
     return {
+      baseMessage,
       name: newMessage.geo.name,
       lat: newMessage.geo.lat,
       long: newMessage.geo.long,
-      baseMessage,
     };
   }
 

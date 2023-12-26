@@ -46,8 +46,8 @@ export class TextMessageService
 
   dtoToEntity(newMessage: TextMessageDto, baseMessage: Message): TextMessage {
     return {
-      text: newMessage.message,
       baseMessage,
+      text: newMessage.message,
     };
   }
 

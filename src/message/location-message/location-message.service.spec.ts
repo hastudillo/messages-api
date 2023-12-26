@@ -6,7 +6,10 @@ import { validate as isValidUUID } from 'uuid';
 import { locationMessageDtoMock } from '../mocks/location-message.dto.mock';
 import { LocationMessage } from './location-message.entity';
 import { LocationMessageService } from './location-message.service';
-import { locationMessageEntityMock } from './mocks/location-message.entity.mock';
+import {
+  locationMessageEntityBeforeSaveMock,
+  locationMessageEntityMock,
+} from './mocks/location-message.entity.mock';
 
 describe('LocationMessageService', () => {
   let service: LocationMessageService;
@@ -36,13 +39,16 @@ describe('LocationMessageService', () => {
 
   describe('save', () => {
     it('should save a LocationMessage entity and return a DTO', async () => {
-      jest
+      const spyOnSave = jest
         .spyOn(repository, 'save')
         .mockResolvedValue(locationMessageEntityMock);
       const result = await service.save(locationMessageDtoMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(locationMessageDtoMock);
+      expect(spyOnSave).toHaveBeenCalledWith(
+        locationMessageEntityBeforeSaveMock,
+      );
     });
   });
 });

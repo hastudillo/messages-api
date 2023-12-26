@@ -1,7 +1,17 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AxiosHeaders, AxiosResponse, AxiosResponseHeaders } from 'axios';
+import { catchError, lastValueFrom, map, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 
+import {
+  FILENAME_IN_CONTENT_DISPOSITION,
+  HEADER_CONTENT_DISPOSITION,
+  HEADER_CONTENT_TYPE,
+  HEADER_LOCATION,
+  SLASH,
+} from '../../common/constants';
 import {
   AttachmentMessageDto,
   ReturnedAttachmentMessageDto,
@@ -23,6 +33,7 @@ export class AttachmentMessageService
   constructor(
     @InjectRepository(AttachmentMessage)
     private readonly attachmentMessageRepository: Repository<AttachmentMessage>,
+    private readonly httpService: HttpService,
   ) {
     super();
   }
@@ -31,7 +42,7 @@ export class AttachmentMessageService
     newMessage: IncomingMessage | OutgoingMessage,
   ): Promise<ReturnedAttachmentMessageDto> {
     const baseMessage: Message = this.dtoToEntityMessage(newMessage);
-    const attachmentMessage = this.dtoToEntity(
+    const attachmentMessage = await this.dtoToEntity(
       newMessage as AttachmentMessageDto,
       baseMessage,
     );
@@ -44,13 +55,25 @@ export class AttachmentMessageService
     return this.entityToDto(savedAttachmentMessage, messageToReturn);
   }
 
-  dtoToEntity(
+  async dtoToEntity(
     newMessage: AttachmentMessageDto,
     baseMessage: Message,
-  ): AttachmentMessage {
+  ): Promise<AttachmentMessage> {
+    const headers: AxiosResponseHeaders | Partial<AxiosHeaders> =
+      await lastValueFrom(this.getHeadersFromUrl(newMessage.url));
+    const contentType: string = headers[HEADER_CONTENT_TYPE] ?? '';
+    const fileName: string =
+      headers[HEADER_CONTENT_DISPOSITION]?.split(
+        FILENAME_IN_CONTENT_DISPOSITION,
+      )?.pop() ??
+      headers[HEADER_LOCATION]?.split(SLASH)?.pop() ??
+      newMessage.url.split(SLASH).pop() ??
+      '';
     return {
-      url: newMessage.url,
       baseMessage,
+      url: newMessage.url,
+      contentType,
+      fileName,
     };
   }
 
@@ -67,5 +90,18 @@ export class AttachmentMessageService
       conversationId: messageToReturn.conversationId,
       url: savedAttachmentMessage.url,
     };
+  }
+
+  private getHeadersFromUrl(
+    url: string,
+  ): Observable<AxiosResponseHeaders | Partial<AxiosHeaders>> {
+    return this.httpService.get(url).pipe(
+      catchError((error) => {
+        throw `An error happened while getting info from ${url}: ${JSON.stringify(
+          error?.response?.data,
+        )}`;
+      }),
+      map((response: AxiosResponse) => response.headers),
+    );
   }
 }

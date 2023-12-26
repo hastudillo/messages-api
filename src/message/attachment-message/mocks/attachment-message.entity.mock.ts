@@ -13,4 +13,18 @@ export const attachmentMessageEntityMock: AttachmentMessage = {
     conversationId: 'conversationId',
   },
   url: 'https://25516543.fs1.hubspotusercontent-eu1.net/hubfs/25516543/Saysimple%20webchat%20icon-1.png',
+  contentType: 'image/png',
+  fileName: 'Saysimple%20webchat%20icon-1.png',
+};
+
+export const attachmentMessageEntityBeforeSaveMock: AttachmentMessage = {
+  baseMessage: {
+    status: StatusEnum.received,
+    time: '1970-01-01 00:00:00',
+    messageId: 'messageId',
+    conversationId: 'conversationId',
+  },
+  url: 'https://25516543.fs1.hubspotusercontent-eu1.net/hubfs/25516543/Saysimple%20webchat%20icon-1.png',
+  contentType: 'image/png',
+  fileName: 'Saysimple%20webchat%20icon-1.png',
 };

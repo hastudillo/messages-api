@@ -54,8 +54,8 @@ export class TemplateMessageService
     baseMessage: Message,
   ): TextMessage {
     return {
-      text: mustache.render(newMessage.message, newMessage.variables),
       baseMessage,
+      text: mustache.render(newMessage.message, newMessage.variables),
     };
   }
 

@@ -19,4 +19,10 @@ export class AttachmentMessage {
 
   @Column()
   url: string;
+
+  @Column()
+  contentType: string;
+
+  @Column()
+  fileName: string;
 }

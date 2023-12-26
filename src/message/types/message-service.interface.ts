@@ -17,7 +17,7 @@ export interface IMessageService {
   dtoToEntity(
     newMessage: IncomingMessage | OutgoingMessage,
     message: Message,
-  ): ConcreteMessageEntities;
+  ): ConcreteMessageEntities | Promise<ConcreteMessageEntities>;
   entityToDto(
     savedTextMessage: ConcreteMessageEntities,
     messageToReturn: BaseMessageDto,

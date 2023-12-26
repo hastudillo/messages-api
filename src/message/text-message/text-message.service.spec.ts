@@ -6,7 +6,10 @@ import { validate as isValidUUID } from 'uuid';
 import { textMessageDtoMock } from '../mocks/text-message.dto.mock';
 import { TextMessageService } from '../text-message/text-message.service';
 import { TextMessage } from './text-message.entity';
-import { textMessageEntityMock } from './mocks/text-message.entity.mock';
+import {
+  textMessageEntityBeforeSaveMock,
+  textMessageEntityMock,
+} from './mocks/text-message.entity.mock';
 
 describe('TextMessageService', () => {
   let service: TextMessageService;
@@ -36,11 +39,14 @@ describe('TextMessageService', () => {
 
   describe('save', () => {
     it('should save a TextMessage entity and return a DTO', async () => {
-      jest.spyOn(repository, 'save').mockResolvedValue(textMessageEntityMock);
+      const spyOnSave = jest
+        .spyOn(repository, 'save')
+        .mockResolvedValue(textMessageEntityMock);
       const result = await service.save(textMessageDtoMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(textMessageDtoMock);
+      expect(spyOnSave).toHaveBeenCalledWith(textMessageEntityBeforeSaveMock);
     });
   });
 });

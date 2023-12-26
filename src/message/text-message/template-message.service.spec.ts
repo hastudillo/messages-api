@@ -7,7 +7,10 @@ import {
   replacedTemplateMessageDtoMock,
   templateMessageDtoMock,
 } from '../mocks/template-message.dto.mock';
-import { templateTextMessageEntityMock } from './mocks/text-message.entity.mock';
+import {
+  templateTextMessageEntityBeforeSaveMock,
+  templateTextMessageEntityMock,
+} from './mocks/text-message.entity.mock';
 import { TemplateMessageService } from './template-message.service';
 import { TextMessage } from './text-message.entity';
 
@@ -39,13 +42,16 @@ describe('TemplateMessageService', () => {
 
   describe('save', () => {
     it('should save a TextMessage entity and return a DTO', async () => {
-      jest
+      const spyOnSave = jest
         .spyOn(repository, 'save')
         .mockResolvedValue(templateTextMessageEntityMock);
       const result = await service.save(templateMessageDtoMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(replacedTemplateMessageDtoMock);
+      expect(spyOnSave).toHaveBeenCalledWith(
+        templateTextMessageEntityBeforeSaveMock,
+      );
     });
   });
 });

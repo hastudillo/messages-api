@@ -16,3 +16,15 @@ export const locationMessageEntityMock: LocationMessage = {
   lat: 0,
   long: 0,
 };
+
+export const locationMessageEntityBeforeSaveMock: LocationMessage = {
+  baseMessage: {
+    status: StatusEnum.received,
+    time: '1970-01-01 00:00:00',
+    messageId: 'messageId',
+    conversationId: 'conversationId',
+  },
+  name: 'somewhere',
+  lat: 0,
+  long: 0,
+};
