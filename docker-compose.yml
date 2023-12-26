@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql
+    restart: on-failure
+    env_file: .env
+    ports:
+      - '3306:3306'
+
+  nestjs_message_api:
+    container_name: nestjs_message_api
+    build:
+      context: .
+    expose:
+      - '3000'
+    ports:
+      - 3000:3000
+    env_file: .env
+    depends_on:
+      - mysql

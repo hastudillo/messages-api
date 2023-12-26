@@ -59,3 +59,21 @@ $ docker-compose -f mysql-docker-compose.yml up
 # e2e tests
 $ npm run test:e2e
 ```
+
+## Running the app in any environment
+
+A `Dockerfile` file has been added to get the project ready to be run in any environment.
+
+```bash
+$ docker build -t nestjs-message-api .
+
+$ docker run -p 3000:3000 --name nestjs-message-api nestjs-message-api
+```
+
+NB. Mind the `host.docker.internal` among the environment variables. Valid to resolves to the internal IP address used by the host on every platform in Docker last versions. It will point to a MySQL instance running in your localhost.
+
+The `docker-compose.yml` can make the task even easier if you are running (as suggested) MySQL with Docker:
+
+```bash
+$ docker-compose up
+```
