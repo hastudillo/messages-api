@@ -6,7 +6,7 @@ import { DataSource, Repository } from 'typeorm';
 import { validate as isValidUUID } from 'uuid';
 
 import { AppModule } from '../src/app.module';
-import { MYSQL } from '../src/common/constants';
+import { HEADER_API_KEY, MYSQL } from '../src/common/constants';
 import { EnvEnum } from '../src/common/enums/env.enum';
 import { AttachmentMessage } from '../src/message/attachment-message/attachment-message.entity';
 import { Message } from '../src/message/entities/message.entity';
@@ -15,6 +15,8 @@ import { attachmentMessageDtoMock } from '../src/message/mocks/attachment-messag
 import { locationMessageDtoMock } from '../src/message/mocks/location-message.dto.mock';
 import { textMessageDtoMock } from '../src/message/mocks/text-message.dto.mock';
 import { TextMessage } from '../src/message/text-message/text-message.entity';
+
+const apiKey: string = 'abcdef12345';
 
 import {
   replacedTemplateMessageDtoMock,
@@ -62,6 +64,7 @@ describe('MessageController (e2e)', () => {
     it('/messages/incoming-messages (POST) attachment', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/incoming-messages')
+        .set(HEADER_API_KEY, apiKey)
         .send(attachmentMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
@@ -87,6 +90,7 @@ describe('MessageController (e2e)', () => {
     it('/messages/incoming-messages (POST) location', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/incoming-messages')
+        .set(HEADER_API_KEY, apiKey)
         .send(locationMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
@@ -112,6 +116,7 @@ describe('MessageController (e2e)', () => {
     it('/messages/incoming-messages (POST) text', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/incoming-messages')
+        .set(HEADER_API_KEY, apiKey)
         .send(textMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;

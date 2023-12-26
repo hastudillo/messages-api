@@ -4,7 +4,7 @@ import * as classValidator from 'class-validator';
 
 import { TextMessageDto } from '../../message/dtos/text-message.dto';
 import { textMessageDtoMock } from '../../message/mocks/text-message.dto.mock';
-import { typesOutgoingDtos } from './mapping-message-types-and-dtos';
+import { allowedTypesForOutgoingDtos } from './mapping-message-types-and-dtos';
 import { MessagePipe } from './message.pipe';
 import { ValidationError } from 'class-validator';
 
@@ -12,7 +12,7 @@ describe('MessagePipe', () => {
   let pipe: MessagePipe;
 
   beforeEach(async () => {
-    pipe = new MessagePipe(typesOutgoingDtos);
+    pipe = new MessagePipe(allowedTypesForOutgoingDtos);
   });
 
   beforeEach(() => jest.clearAllMocks());

@@ -4,15 +4,19 @@ import {
   InternalServerErrorException,
   Logger,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
   ApiExtraModels,
   ApiResponse,
+  ApiSecurity,
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
 
+import { API_KEY_NAME } from '../common/constants';
+import { ApiKeyGuard } from '../common/guards/api-key.guard';
 import {
   allowedTypesForIncomingDtos,
   allowedTypesForOutgoingDtos,
@@ -95,7 +99,17 @@ export class MessageController {
       ],
     },
   })
+  @ApiResponse({
+    status: 400,
+    description: 'The incoming message cannot be accepted.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: "The API key wasn't provided or is incorrect.",
+  })
+  @ApiSecurity(API_KEY_NAME)
   @Post('incoming-messages')
+  @UseGuards(ApiKeyGuard)
   async receivingNewMessage(
     @Body(new MessagePipe(allowedTypesForIncomingDtos))
     incomingMessage: IncomingMessage,
@@ -156,6 +170,14 @@ export class MessageController {
         },
       ],
     },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'The incoming message cannot be accepted.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: "The JWT token wasn't provided or is incorrect.",
   })
   @Post('outgoing-messages')
   async sendingNewMessage(

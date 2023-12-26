@@ -7,3 +7,5 @@ export const HEADER_CONTENT_DISPOSITION: string = 'content-disposition';
 export const FILENAME_IN_CONTENT_DISPOSITION: string = 'filename=';
 export const HEADER_LOCATION: string = 'location';
 export const SLASH: string = '/';
+export const HEADER_API_KEY: string = 'x-api-key';
+export const API_KEY_NAME: string = 'Api-Key';

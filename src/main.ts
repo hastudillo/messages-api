@@ -4,11 +4,18 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 import { EnvEnum } from './common/enums/env.enum';
+import { API_KEY_NAME, HEADER_API_KEY } from './common/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder().setVersion('1.0').build();
+  const config = new DocumentBuilder()
+    .setVersion('1.0')
+    .addApiKey(
+      { type: 'apiKey', in: 'header', name: HEADER_API_KEY },
+      API_KEY_NAME,
+    )
+    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
