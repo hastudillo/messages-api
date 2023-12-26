@@ -14,6 +14,11 @@ import {
 } from '@nestjs/swagger';
 
 import {
+  allowedTypesForIncomingDtos,
+  allowedTypesForOutgoingDtos,
+} from '../common/pipes/mapping-message-types-and-dtos';
+import { MessagePipe } from '../common/pipes/message.pipe';
+import {
   AttachmentMessageDto,
   ReturnedAttachmentMessageDto,
 } from './dtos/attachment-message.dto';
@@ -92,7 +97,8 @@ export class MessageController {
   })
   @Post('incoming-messages')
   async receivingNewMessage(
-    @Body() incomingMessage: IncomingMessage,
+    @Body(new MessagePipe(allowedTypesForIncomingDtos))
+    incomingMessage: IncomingMessage,
   ): Promise<ReturnedIncomingMessage> {
     let service: MessageService;
     try {
@@ -153,7 +159,8 @@ export class MessageController {
   })
   @Post('outgoing-messages')
   async sendingNewMessage(
-    @Body() outgoingMessage: OutgoingMessage,
+    @Body(new MessagePipe(allowedTypesForOutgoingDtos))
+    outgoingMessage: OutgoingMessage,
   ): Promise<ReturnedOutgoingMessage> {
     let service: MessageService;
     try {
