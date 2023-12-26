@@ -16,7 +16,10 @@ import { locationMessageDtoMock } from '../src/message/mocks/location-message.dt
 import { textMessageDtoMock } from '../src/message/mocks/text-message.dto.mock';
 import { TextMessage } from '../src/message/text-message/text-message.entity';
 
-import { templateMessageDtoMock } from '../src/message/mocks/template-message.dto.mock';
+import {
+  replacedTemplateMessageDtoMock,
+  templateMessageDtoMock,
+} from '../src/message/mocks/template-message.dto.mock';
 describe('MessageController (e2e)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
@@ -213,10 +216,10 @@ describe('MessageController (e2e)', () => {
         .expect(201);
       const { id, ...rest } = res.body;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(templateMessageDtoMock);
+      expect(rest).toEqual(replacedTemplateMessageDtoMock);
 
       const textMessage: TextMessage = await textMessageRepository.findOne({
-        where: { text: templateMessageDtoMock.message },
+        where: { text: replacedTemplateMessageDtoMock.message },
         relations: {
           baseMessage: true,
         },

@@ -3,19 +3,22 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { validate as isValidUUID } from 'uuid';
 
-import { textMessageDtoMock } from '../mocks/text-message.dto.mock';
-import { TextMessageService } from '../text-message/text-message.service';
+import {
+  replacedTemplateMessageDtoMock,
+  templateMessageDtoMock,
+} from '../mocks/template-message.dto.mock';
+import { templateTextMessageEntityMock } from './mocks/text-message.entity.mock';
+import { TemplateMessageService } from './template-message.service';
 import { TextMessage } from './text-message.entity';
-import { textMessageEntityMock } from './mocks/text-message.entity.mock';
 
-describe('TextMessageService', () => {
-  let service: TextMessageService;
+describe('TemplateMessageService', () => {
+  let service: TemplateMessageService;
   let repository: Repository<TextMessage>;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       providers: [
-        TextMessageService,
+        TemplateMessageService,
         {
           provide: getRepositoryToken(TextMessage),
           useClass: Repository,
@@ -23,7 +26,7 @@ describe('TextMessageService', () => {
       ],
     }).compile();
 
-    service = app.get<TextMessageService>(TextMessageService);
+    service = app.get<TemplateMessageService>(TemplateMessageService);
     repository = app.get<Repository<TextMessage>>(
       getRepositoryToken(TextMessage),
     );
@@ -36,11 +39,13 @@ describe('TextMessageService', () => {
 
   describe('save', () => {
     it('should save a TextMessage entity and return a DTO', async () => {
-      jest.spyOn(repository, 'save').mockResolvedValue(textMessageEntityMock);
-      const result = await service.save(textMessageDtoMock);
+      jest
+        .spyOn(repository, 'save')
+        .mockResolvedValue(templateTextMessageEntityMock);
+      const result = await service.save(templateMessageDtoMock);
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
-      expect(rest).toEqual(textMessageDtoMock);
+      expect(rest).toEqual(replacedTemplateMessageDtoMock);
     });
   });
 });

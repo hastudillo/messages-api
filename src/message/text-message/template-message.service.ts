@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as mustache from 'mustache';
 import { Repository } from 'typeorm';
 
 import { BaseMessageDto } from '../dtos/base-message.dto';
@@ -53,7 +54,7 @@ export class TemplateMessageService
     baseMessage: Message,
   ): TextMessage {
     return {
-      text: newMessage.message,
+      text: mustache.render(newMessage.message, newMessage.variables),
       baseMessage,
     };
   }
