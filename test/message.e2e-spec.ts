@@ -6,22 +6,27 @@ import { DataSource, Repository } from 'typeorm';
 import { validate as isValidUUID } from 'uuid';
 
 import { AppModule } from '../src/app.module';
-import { HEADER_API_KEY, MYSQL } from '../src/common/constants';
+import { BEARER, HEADER_API_KEY, MYSQL } from '../src/common/constants';
 import { EnvEnum } from '../src/common/enums/env.enum';
 import { AttachmentMessage } from '../src/message/attachment-message/attachment-message.entity';
 import { Message } from '../src/message/entities/message.entity';
 import { LocationMessage } from '../src/message/location-message/location-message.entity';
 import { attachmentMessageDtoMock } from '../src/message/mocks/attachment-message.dto.mock';
 import { locationMessageDtoMock } from '../src/message/mocks/location-message.dto.mock';
-import { textMessageDtoMock } from '../src/message/mocks/text-message.dto.mock';
-import { TextMessage } from '../src/message/text-message/text-message.entity';
-
-const apiKey: string = 'abcdef12345';
-
 import {
   replacedTemplateMessageDtoMock,
   templateMessageDtoMock,
 } from '../src/message/mocks/template-message.dto.mock';
+import { textMessageDtoMock } from '../src/message/mocks/text-message.dto.mock';
+import { TextMessage } from '../src/message/text-message/text-message.entity';
+
+// ! https://swagger.io/docs/specification/authentication/api-keys/
+const apiKey: string = 'abcdef12345';
+// ! default when visiting https://jwt.io/ for secret "your-256-bit-secret" and payload { "sub": "1234567890", "name": "John Doe", "iat": 1516239022 }
+const token: string =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+const bearerToken: string = `${BEARER} ${token}`;
+
 describe('MessageController (e2e)', () => {
   let app: INestApplication;
   let dataSource: DataSource;
@@ -143,6 +148,7 @@ describe('MessageController (e2e)', () => {
     it('/messages/outgoing-messages (POST) attachment', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/outgoing-messages')
+        .set('authorization', bearerToken)
         .send(attachmentMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
@@ -168,6 +174,7 @@ describe('MessageController (e2e)', () => {
     it('/messages/outgoing-messages (POST) location', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/outgoing-messages')
+        .set('authorization', bearerToken)
         .send(locationMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
@@ -193,6 +200,7 @@ describe('MessageController (e2e)', () => {
     it('/messages/outgoing-messages (POST) text', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/outgoing-messages')
+        .set('authorization', bearerToken)
         .send(textMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;
@@ -217,6 +225,7 @@ describe('MessageController (e2e)', () => {
     it('/messages/outgoing-messages (POST) template', async () => {
       const res = await request(app.getHttpServer())
         .post('/messages/outgoing-messages')
+        .set('authorization', bearerToken)
         .send(templateMessageDtoMock)
         .expect(201);
       const { id, ...rest } = res.body;

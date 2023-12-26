@@ -1,9 +1,9 @@
+import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { HEADER_API_KEY } from '../common/constants';
+import { EnvEnum } from '../common/enums/env.enum';
 import { ApiKeyGuard } from './api-key.guard';
-import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { EnvEnum } from '../enums/env.enum';
-import { HEADER_API_KEY } from '../constants';
 
 const configServiceMock = {
   get: jest.fn(),

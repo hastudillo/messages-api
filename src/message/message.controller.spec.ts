@@ -1,5 +1,6 @@
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { NIL as UUID_NIL, validate as isValidUUID } from 'uuid';
 
@@ -38,6 +39,7 @@ describe('MessageController', () => {
           },
         },
         ConfigService,
+        JwtService,
       ],
     }).compile();
 

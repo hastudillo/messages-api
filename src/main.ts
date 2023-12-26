@@ -4,7 +4,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 import { EnvEnum } from './common/enums/env.enum';
-import { API_KEY_NAME, HEADER_API_KEY } from './common/constants';
+import {
+  API_KEY_AUTH_NAME,
+  HEADER_API_KEY,
+  JWT_AUTH_NAME,
+} from './common/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,7 +17,17 @@ async function bootstrap() {
     .setVersion('1.0')
     .addApiKey(
       { type: 'apiKey', in: 'header', name: HEADER_API_KEY },
-      API_KEY_NAME,
+      API_KEY_AUTH_NAME,
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        in: 'header',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+      },
+      JWT_AUTH_NAME,
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);

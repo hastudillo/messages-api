@@ -8,4 +8,7 @@ export const FILENAME_IN_CONTENT_DISPOSITION: string = 'filename=';
 export const HEADER_LOCATION: string = 'location';
 export const SLASH: string = '/';
 export const HEADER_API_KEY: string = 'x-api-key';
-export const API_KEY_NAME: string = 'Api-Key';
+export const API_KEY_AUTH_NAME: string = 'Api-Key';
+export const BEARER: string = 'Bearer';
+export const USER: string = 'user';
+export const JWT_AUTH_NAME: string = 'JWT';

@@ -15,8 +15,9 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import { API_KEY_NAME } from '../common/constants';
-import { ApiKeyGuard } from '../common/guards/api-key.guard';
+import { ApiKeyGuard } from '../auth/api-key.guard';
+import { JwtGuard } from '../auth/jwt.guard';
+import { API_KEY_AUTH_NAME, JWT_AUTH_NAME } from '../common/constants';
 import {
   allowedTypesForIncomingDtos,
   allowedTypesForOutgoingDtos,
@@ -107,7 +108,7 @@ export class MessageController {
     status: 401,
     description: "The API key wasn't provided or is incorrect.",
   })
-  @ApiSecurity(API_KEY_NAME)
+  @ApiSecurity(API_KEY_AUTH_NAME)
   @Post('incoming-messages')
   @UseGuards(ApiKeyGuard)
   async receivingNewMessage(
@@ -179,7 +180,9 @@ export class MessageController {
     status: 401,
     description: "The JWT token wasn't provided or is incorrect.",
   })
+  @ApiSecurity(JWT_AUTH_NAME)
   @Post('outgoing-messages')
+  @UseGuards(JwtGuard)
   async sendingNewMessage(
     @Body(new MessagePipe(allowedTypesForOutgoingDtos))
     outgoingMessage: OutgoingMessage,

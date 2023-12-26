@@ -7,8 +7,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 
-import { EnvEnum } from '../enums/env.enum';
-import { HEADER_API_KEY } from '../constants';
+import { HEADER_API_KEY } from '../common/constants';
+import { EnvEnum } from '../common/enums/env.enum';
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {

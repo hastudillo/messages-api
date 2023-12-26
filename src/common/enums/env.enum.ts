@@ -8,4 +8,5 @@ export enum EnvEnum {
   MYSQL_SYNCHRONIZE = 'MYSQL_SYNCHRONIZE',
   APP_PORT = 'APP_PORT',
   API_KEY = 'API_KEY',
+  JWT_SECRET = 'JWT_SECRET',
 }
