@@ -1,4 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  InternalServerErrorException,
+  Logger,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiExtraModels,
@@ -47,7 +53,10 @@ import {
 )
 @Controller('messages')
 export class MessageController {
-  constructor(private readonly strategyService: StrategyService) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly strategyService: StrategyService,
+  ) {}
 
   @ApiBody({
     schema: {
@@ -85,10 +94,23 @@ export class MessageController {
   async receivingNewMessage(
     @Body() incomingMessage: IncomingMessage,
   ): Promise<ReturnedIncomingMessage> {
-    const service: MessageService = this.strategyService.getStrategy(
-      incomingMessage.type,
-    );
-    return service.save(incomingMessage);
+    let service: MessageService;
+    try {
+      service = this.strategyService.getStrategy(incomingMessage.type);
+    } catch (err) {
+      this.logger.log(err);
+      throw new InternalServerErrorException(
+        'Error while choosing the strategy to process the incoming message',
+      );
+    }
+    try {
+      return service.save(incomingMessage) as Promise<ReturnedIncomingMessage>;
+    } catch (err) {
+      this.logger.error(err);
+      throw new InternalServerErrorException(
+        'Error while executing the strategy to process the incoming message',
+      );
+    }
   }
 
   @ApiBody({
@@ -133,9 +155,22 @@ export class MessageController {
   async sendingNewMessage(
     @Body() outgoingMessage: OutgoingMessage,
   ): Promise<ReturnedOutgoingMessage> {
-    const service: MessageService = this.strategyService.getStrategy(
-      outgoingMessage.type,
-    );
-    return service.save(outgoingMessage);
+    let service: MessageService;
+    try {
+      service = this.strategyService.getStrategy(outgoingMessage.type);
+    } catch (err) {
+      this.logger.error(err);
+      throw new InternalServerErrorException(
+        'Error while choosing the strategy to process the outgoing message',
+      );
+    }
+    try {
+      return service.save(outgoingMessage);
+    } catch (err) {
+      this.logger.error(err);
+      throw new InternalServerErrorException(
+        'Error while executing the strategy to process the outgoing message',
+      );
+    }
   }
 }

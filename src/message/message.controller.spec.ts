@@ -1,3 +1,4 @@
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { NIL as UUID_NIL, validate as isValidUUID } from 'uuid';
 
@@ -23,6 +24,13 @@ describe('MessageController', () => {
       controllers: [MessageController],
       providers: [
         {
+          provide: Logger,
+          useValue: {
+            log: jest.fn(),
+            error: jest.fn(),
+          },
+        },
+        {
           provide: StrategyService,
           useValue: {
             getStrategy: jest.fn(),
@@ -34,6 +42,8 @@ describe('MessageController', () => {
     controller = app.get<MessageController>(MessageController);
     strategyService = app.get<StrategyService>(StrategyService);
   });
+
+  beforeEach(() => jest.clearAllMocks());
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
@@ -86,6 +96,36 @@ describe('MessageController', () => {
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(textMessageDtoMock);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
+      expect(spyOnSave).toHaveBeenCalledWith(textMessageDtoMock);
+    });
+
+    it('should receive an incoming message and fail while getting strategy', async () => {
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockImplementation(() => {
+          throw Error();
+        });
+      const spyOnSave = jest.spyOn(messageServiceMock, 'save');
+      expect(() =>
+        controller.receivingNewMessage(textMessageDtoMock),
+      ).rejects.toThrow(InternalServerErrorException);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
+      expect(spyOnSave).not.toHaveBeenCalled();
+    });
+
+    it('should receive an incoming message and fail while saving message', async () => {
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockReturnValue(messageServiceMock as unknown as MessageService);
+      const spyOnSave = jest
+        .spyOn(messageServiceMock, 'save')
+        .mockImplementation(() => {
+          throw Error();
+        });
+      expect(() =>
+        controller.receivingNewMessage(textMessageDtoMock),
+      ).rejects.toThrow(InternalServerErrorException);
       expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
       expect(spyOnSave).toHaveBeenCalledWith(textMessageDtoMock);
     });
@@ -152,6 +192,36 @@ describe('MessageController', () => {
       expect(rest).toEqual(templateMessageDtoMock);
       expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.template);
       expect(spyOnSave).toHaveBeenCalledWith(templateMessageDtoMock);
+    });
+
+    it('should receive an incoming message and fail while getting strategy', async () => {
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockImplementation(() => {
+          throw Error();
+        });
+      const spyOnSave = jest.spyOn(messageServiceMock, 'save');
+      expect(() =>
+        controller.sendingNewMessage(textMessageDtoMock),
+      ).rejects.toThrow(InternalServerErrorException);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
+      expect(spyOnSave).not.toHaveBeenCalled();
+    });
+
+    it('should receive an incoming message and fail while saving message', async () => {
+      const spyOnGetStrategy = jest
+        .spyOn(strategyService, 'getStrategy')
+        .mockReturnValue(messageServiceMock as unknown as MessageService);
+      const spyOnSave = jest
+        .spyOn(messageServiceMock, 'save')
+        .mockImplementation(() => {
+          throw Error();
+        });
+      expect(() =>
+        controller.sendingNewMessage(textMessageDtoMock),
+      ).rejects.toThrow(InternalServerErrorException);
+      expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
+      expect(spyOnSave).toHaveBeenCalledWith(textMessageDtoMock);
     });
   });
 });
