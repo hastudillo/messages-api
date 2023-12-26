@@ -8,6 +8,6 @@ export const templateMessageDtoMock: TemplateMessageDto = {
   time: '1970-01-01T00:00:00.000Z',
   messageId: 'messageId',
   conversationId: 'conversationId',
-  message: 'message mock',
-  variables: { key: 'value' },
+  message: 'Hello {{ name }}, this is a message',
+  variables: { name: 'John Doe' },
 };

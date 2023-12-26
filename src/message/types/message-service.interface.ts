@@ -1,6 +1,6 @@
+import { ConcreteMessageEntities } from '../../database/concrete-message-entities.type';
 import { BaseMessageDto } from '../dtos/base-message.dto';
 import { Message } from '../entities/message.entity';
-import { TextMessage } from '../text-message/text-message.entity';
 import {
   IncomingMessage,
   ReturnedIncomingMessage,
@@ -10,9 +10,6 @@ import {
   ReturnedOutgoingMessage,
 } from './outgoing-message.type';
 
-// TODO:
-type ConcreteMessageEntities = TextMessage;
-
 export interface IMessageService {
   save(
     newMessage: IncomingMessage | OutgoingMessage,
@@ -20,9 +17,10 @@ export interface IMessageService {
   dtoToEntity(
     newMessage: IncomingMessage | OutgoingMessage,
     message: Message,
-  ): TextMessage;
+  ): ConcreteMessageEntities;
   entityToDto(
     savedTextMessage: ConcreteMessageEntities,
     messageToReturn: BaseMessageDto,
+    newMessage?: IncomingMessage | OutgoingMessage,
   ): ReturnedIncomingMessage | ReturnedOutgoingMessage;
 }
