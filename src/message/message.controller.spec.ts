@@ -2,6 +2,7 @@ import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request } from 'express';
 import { NIL as UUID_NIL, validate as isValidUUID } from 'uuid';
 
 import { MessageTypeEnum } from './enums/message-type.enum';
@@ -15,6 +16,11 @@ import { MessageService } from './types/message-service.type';
 
 const messageServiceMock = {
   save: jest.fn(),
+};
+
+const userMock: string = 'John Doe';
+const requestMock = {
+  user: userMock,
 };
 
 describe('MessageController', () => {
@@ -145,12 +151,16 @@ describe('MessageController', () => {
         .mockResolvedValue({ ...attachmentMessageDtoMock, id: UUID_NIL });
       const result = await controller.sendingNewMessage(
         attachmentMessageDtoMock,
+        requestMock as unknown as Request,
       );
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(attachmentMessageDtoMock);
       expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.attachment);
-      expect(spyOnSave).toHaveBeenCalledWith(attachmentMessageDtoMock);
+      expect(spyOnSave).toHaveBeenCalledWith(
+        attachmentMessageDtoMock,
+        userMock,
+      );
     });
 
     it('should receive an outgoing location message and return it', async () => {
@@ -160,12 +170,15 @@ describe('MessageController', () => {
       const spyOnSave = jest
         .spyOn(messageServiceMock, 'save')
         .mockResolvedValue({ ...locationMessageDtoMock, id: UUID_NIL });
-      const result = await controller.sendingNewMessage(locationMessageDtoMock);
+      const result = await controller.sendingNewMessage(
+        locationMessageDtoMock,
+        requestMock as unknown as Request,
+      );
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(locationMessageDtoMock);
       expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.location);
-      expect(spyOnSave).toHaveBeenCalledWith(locationMessageDtoMock);
+      expect(spyOnSave).toHaveBeenCalledWith(locationMessageDtoMock, userMock);
     });
 
     it('should receive an outgoing text message and return it', async () => {
@@ -175,12 +188,15 @@ describe('MessageController', () => {
       const spyOnSave = jest
         .spyOn(messageServiceMock, 'save')
         .mockResolvedValue({ ...textMessageDtoMock, id: UUID_NIL });
-      const result = await controller.sendingNewMessage(textMessageDtoMock);
+      const result = await controller.sendingNewMessage(
+        textMessageDtoMock,
+        requestMock as unknown as Request,
+      );
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(textMessageDtoMock);
       expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
-      expect(spyOnSave).toHaveBeenCalledWith(textMessageDtoMock);
+      expect(spyOnSave).toHaveBeenCalledWith(textMessageDtoMock, userMock);
     });
 
     it('should receive an outgoing template message and return it', async () => {
@@ -190,12 +206,15 @@ describe('MessageController', () => {
       const spyOnSave = jest
         .spyOn(messageServiceMock, 'save')
         .mockResolvedValue({ ...templateMessageDtoMock, id: UUID_NIL });
-      const result = await controller.sendingNewMessage(templateMessageDtoMock);
+      const result = await controller.sendingNewMessage(
+        templateMessageDtoMock,
+        requestMock as unknown as Request,
+      );
       const { id, ...rest } = result;
       expect(isValidUUID(id)).toBe(true);
       expect(rest).toEqual(templateMessageDtoMock);
       expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.template);
-      expect(spyOnSave).toHaveBeenCalledWith(templateMessageDtoMock);
+      expect(spyOnSave).toHaveBeenCalledWith(templateMessageDtoMock, userMock);
     });
 
     it('should receive an incoming message and fail while getting strategy', async () => {
@@ -206,7 +225,10 @@ describe('MessageController', () => {
         });
       const spyOnSave = jest.spyOn(messageServiceMock, 'save');
       expect(() =>
-        controller.sendingNewMessage(textMessageDtoMock),
+        controller.sendingNewMessage(
+          textMessageDtoMock,
+          requestMock as unknown as Request,
+        ),
       ).rejects.toThrow(InternalServerErrorException);
       expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
       expect(spyOnSave).not.toHaveBeenCalled();
@@ -222,10 +244,13 @@ describe('MessageController', () => {
           throw Error();
         });
       expect(() =>
-        controller.sendingNewMessage(textMessageDtoMock),
+        controller.sendingNewMessage(
+          textMessageDtoMock,
+          requestMock as unknown as Request,
+        ),
       ).rejects.toThrow(InternalServerErrorException);
       expect(spyOnGetStrategy).toHaveBeenCalledWith(MessageTypeEnum.text);
-      expect(spyOnSave).toHaveBeenCalledWith(textMessageDtoMock);
+      expect(spyOnSave).toHaveBeenCalledWith(textMessageDtoMock, userMock);
     });
   });
 });

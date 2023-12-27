@@ -40,8 +40,9 @@ export class AttachmentMessageService
 
   async save(
     newMessage: IncomingMessage | OutgoingMessage,
+    user?: string,
   ): Promise<ReturnedAttachmentMessageDto> {
-    const baseMessage: Message = this.dtoToEntityMessage(newMessage);
+    const baseMessage: Message = this.dtoToEntityMessage(newMessage, user);
     const attachmentMessage = await this.dtoToEntity(
       newMessage as AttachmentMessageDto,
       baseMessage,

@@ -18,4 +18,7 @@ export class Message {
 
   @Column({ type: 'datetime' })
   time: string;
+
+  @Column({ nullable: true })
+  from?: string;
 }

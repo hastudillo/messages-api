@@ -29,8 +29,9 @@ export class LocationMessageService
 
   async save(
     newMessage: IncomingMessage | OutgoingMessage,
+    user?: string,
   ): Promise<ReturnedLocationMessageDto> {
-    const baseMessage: Message = this.dtoToEntityMessage(newMessage);
+    const baseMessage: Message = this.dtoToEntityMessage(newMessage, user);
     const locationMessage = this.dtoToEntity(
       newMessage as LocationMessageDto,
       baseMessage,

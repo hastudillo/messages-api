@@ -30,8 +30,9 @@ export class TemplateMessageService
 
   async save(
     newMessage: IncomingMessage | OutgoingMessage,
+    user?: string,
   ): Promise<ReturnedTemplateMessageDto> {
-    const baseMessage: Message = this.dtoToEntityMessage(newMessage);
+    const baseMessage: Message = this.dtoToEntityMessage(newMessage, user);
     const textMessage = this.dtoToEntity(
       newMessage as TemplateMessageDto,
       baseMessage,

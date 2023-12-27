@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   Logger,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -14,10 +15,11 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { Request } from 'express';
 
 import { ApiKeyGuard } from '../auth/api-key.guard';
 import { JwtGuard } from '../auth/jwt.guard';
-import { API_KEY_AUTH_NAME, JWT_AUTH_NAME } from '../common/constants';
+import { API_KEY_AUTH_NAME, JWT_AUTH_NAME, USER } from '../common/constants';
 import {
   allowedTypesForIncomingDtos,
   allowedTypesForOutgoingDtos,
@@ -186,7 +188,9 @@ export class MessageController {
   async sendingNewMessage(
     @Body(new MessagePipe(allowedTypesForOutgoingDtos))
     outgoingMessage: OutgoingMessage,
+    @Req() request: Request,
   ): Promise<ReturnedOutgoingMessage> {
+    const user: string = request[USER];
     let service: MessageService;
     try {
       service = this.strategyService.getStrategy(outgoingMessage.type);
@@ -197,7 +201,7 @@ export class MessageController {
       );
     }
     try {
-      return service.save(outgoingMessage);
+      return service.save(outgoingMessage, user);
     } catch (err) {
       this.logger.error(err);
       throw new InternalServerErrorException(

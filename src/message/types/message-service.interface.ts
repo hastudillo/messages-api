@@ -13,6 +13,7 @@ import {
 export interface IMessageService {
   save(
     newMessage: IncomingMessage | OutgoingMessage,
+    user?: string,
   ): Promise<ReturnedIncomingMessage | ReturnedOutgoingMessage>;
   dtoToEntity(
     newMessage: IncomingMessage | OutgoingMessage,

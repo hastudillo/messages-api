@@ -9,12 +9,16 @@ import { IncomingMessage } from '../types/incoming-message.type';
 import { OutgoingMessage } from '../types/outgoing-message.type';
 
 export class BaseMessageService {
-  dtoToEntityMessage(newMessage: IncomingMessage | OutgoingMessage): Message {
+  dtoToEntityMessage(
+    newMessage: IncomingMessage | OutgoingMessage,
+    user?: string,
+  ): Message {
     return {
       status: newMessage.status,
       messageId: newMessage.messageId,
       conversationId: newMessage.conversationId,
       time: this.isoDateToUtcDate(newMessage.time),
+      from: user,
     };
   }
 

@@ -29,8 +29,9 @@ export class TextMessageService
 
   async save(
     newMessage: IncomingMessage | OutgoingMessage,
+    user?: string,
   ): Promise<ReturnedTextMessageDto> {
-    const baseMessage: Message = this.dtoToEntityMessage(newMessage);
+    const baseMessage: Message = this.dtoToEntityMessage(newMessage, user);
     const textMessage = this.dtoToEntity(
       newMessage as TextMessageDto,
       baseMessage,
